@@ -1,1 +1,1 @@
-# TeamInductionProject
+# 아두이노와 하드웨어를 연동하여 제어하는 프로그램입니다.
