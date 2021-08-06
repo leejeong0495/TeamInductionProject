@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang=ko>
+  <head>
+    <title>INDUCTION CONTROLLER</title>
+	<meta charset = "utf-8">
+    <link rel="stylesheet" href="./stylesheets/style.css">	<!--html에 css와 자바 적용-->
+</head>
+  
+  <body border="1" bgcolor='#E2E2E2'>
+    <h1 align="center"> &nbsp; &nbsp; INDUCTION CONTROLLER </h1>
+    </br>
+
+	<!--전원0-->
+	<div style="width:200px; height:200px; float:left;">
+		<table>
+			<tr align="center">				
+				<td colspan="6" width="150"><h2>LED</h2><img src="./images/offRed.gif"></td>
+			</tr>
+		</table>
+
+		<table align="center">
+			&nbsp; &nbsp; &nbsp; &nbsp; <a href="/led_on"  target="response" onClick="on_red()">Power On</a> &nbsp; 전원
+			</br></br>
+			&nbsp; &nbsp; &nbsp; &nbsp; <a href="/led_off" target="response" onClick="off_red()">Power Off</a> &nbsp; 전원
+			</br></br>
+		</table>
+	</div>
+
+	<!--잠금1-->
+	<div style="width:200px; height:150px; float:right;">
+		<table>
+			<tr style='text-align:center'>				
+				<td colspan="6" width="150"><h2>LOCK</h2><img src="./images/offGreen.gif"></td>
+			</tr>
+		</table>
+	
+		<table>
+			<td>
+				&nbsp; &nbsp; <a href="/lock_on"  target="response" onClick="on_green()">Lock On</a> &nbsp; Lock
+				</br></br>
+				&nbsp; &nbsp; <a href="/lock_off" target="response" onClick="off_green()">Lock Off</a> &nbsp; Lock
+				</br></br>
+			</td>
+		</table>
+	</div>
+
+	<!--온도2-->
+	<div style="width:250px;">
+		<table>
+			<tr style='text-align:center'>				
+				<td colspan="6" width="150"><h2>온도</h2><img src="./images/tem0.gif"></td>
+			</tr>
+		</table>
+	
+		<table>
+			&nbsp; &nbsp; <a href="/tem_up"  target="response" onClick="tem_up()">Tem Up</a>&nbsp; 온도
+			</br></br>
+			&nbsp; &nbsp;<a href="/tem_down" target="response"onClick="tem_down()">Tem Down</a>&nbsp; 온도
+			</br></br>
+		</table>
+	</div>
+
+
+
+	<!--타이머3-->
+	<div style="width:200px; height:150px; float:right;">
+		<table align="right">
+			&nbsp; &nbsp; <a href="/time_up"  target="response">Time Up</a> &nbsp; Timer Up
+			</br></br>
+			&nbsp; &nbsp; <a href="/time_down" target="response">Time Down</a> &nbsp; Timer Down
+			</br></br>
+		</table>
+	</div>
+	
+	<!--압력센서4-->
+	<table>
+		&nbsp; &nbsp; <a href="/dma_up"  target="response" onClick="dma_up()">dma Up</a> &nbsp; 압력센서
+		</br></br>
+		&nbsp; &nbsp; <a href="/dma_down"  target="response" onClick="dma_down()">dma Down</a> &nbsp; 압력센서
+		</br></br>
+	</table>	
+	
+    <table border="0">
+      <tr>
+        <td rowspan="2">Status Message: </br> &nbsp;</br> &nbsp;</td>
+        <td>
+          <iframe src="about:blank" width="129" height="35" frameborder="0"
+          marginwidth="0" marginheight="0" scrolling="no" name="response"></iframe>
+          <p></p>
+        </td>
+      </tr>
+      <tr>
+        <td> &nbsp; </td>
+      </tr>
+    </table>
+
+	<table>
+		<button type="button" class="navyBtn" onClick="location.href='http://192.168.0.20/dataTable.php'">내역으로 넘어가기</button>
+	</table>
+    
+    <script src="javascripts/jquery-1.12.4.min.js"></script>
+    <!-- script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script -->
+    
+	<script>
+	var cnt = 0;
+	var powerFlag = false;	// 전원
+	var lockFlag = false;	// 잠금
+	var weightFlag = false;	// 무게
+	var timerFlag = false;	// 타이머ss
+
+		<!--전원-->
+		function on_red(){
+			powerFlag = true;
+			if(lockFlag == true){
+				powerFlag = false;
+				weightFlag = false;
+			}
+			else{
+				powerFlag = true;
+				document.images[0].src = './images/onRed.gif';
+			}
+			powerFlag = true;
+			
+		}
+
+		function off_red(){
+			powerFlag = false;
+			if(lockFlag == true){
+				powerFlag = false;
+				weightFlag = false;
+			}
+			else{
+				powerFlag = true;
+				document.images[0].src = "./images/offRed.gif";
+				cnt = 0;
+				document.images[2].src = "./images/tem" + cnt + ".gif";
+			}
+			powerFlag = false;
+		}
+		<!--잠금-->
+		function on_green(){
+			if(powerFlag == true){
+				lockFlag = false;
+			}
+			else{
+				lockFlag = false;
+				document.images[1].src = './images/onGreen.gif';	
+				
+			}
+			lockFlag = true;
+		}
+
+		function off_green(){
+			if(powerFlag == true){
+				lockFlag = false;
+			}
+			else{
+				document.images[1].src = "./images/offGreen.gif";
+				lockFlag = false;
+			}
+			lockFlag = false;
+		}
+		<!--온도-->
+		function tem_up(){
+			if(powerFlag == true && weightFlag == true){
+				lockFlag = false;
+				cnt++;
+				if(cnt > 8){
+					cnt = 8;
+				}
+				document.images[2].src = "./images/tem" + cnt + ".gif";
+			}
+		}
+		
+		function tem_down(){
+			if(powerFlag == true && weightFlag == true){
+				lockFlag = false;
+				cnt --;
+				if(cnt < 0){
+					cnt = 0;
+				}
+				document.images[2].src = "./images/tem" + cnt + ".gif";				
+			}
+		}
+		
+		<!--타이머-->
+		function time_up(){
+			if(powerFlag == true && weightFlag == true){
+				if (timerFlag == false) {
+					timerFlag = true;
+				}
+			}
+		}	
+		
+		function time_down(){
+			if(powerFlag == true && weightFlag == true){
+				if (cnt <= 0) {
+					timerFlag = false;
+					document.images[2].src = "./images/tem" + cnt + ".gif";	
+				} 			
+			}
+		}	
+		
+		<!--압력센서-->
+		function dma_up(){
+			weightFlag = true;
+		}
+		
+		function dma_down(){
+			weightFlag = false;
+			cnt = 0;
+			document.images[2].src = "./images/tem" + cnt + ".gif";
+			
+		}
+
+		function goReplace(str){
+			location.replace(str);
+		}
+    </script>
+  </body>
+</html>
